@@ -1,9 +1,9 @@
 use anchor_lang::prelude::*;
 
-use crate::{AuthRole, AuthorityRole, Deposit, DepositErrors, Package, SetPackageEvent, DEPOSIT_ACCOUNT, OPERATOR_ROLE, PACKAGE};
+use crate::{AuthRole, AuthorityRole, Deposit, DepositErrors, Package, PackageItem, SetPackageEvent, DEPOSIT_ACCOUNT, OPERATOR_ROLE, PACKAGE};
 
 #[derive(Accounts)]
-#[instruction(token: Pubkey, packages: Vec<u64>, valid: bool)]
+#[instruction(token: Pubkey, packages: Vec<PackageItem>, valid: bool)]
 pub struct SetPackage<'info> {
     #[account(
         seeds = [DEPOSIT_ACCOUNT],
@@ -23,7 +23,7 @@ pub struct SetPackage<'info> {
 
     #[account(
         init_if_needed,  
-        space = 8 + 6 + packages.len() * 8, 
+        space = 8 + 6 + packages.len() * 24, 
         payer=operator,
         seeds = [PACKAGE, token.as_ref()],
         bump,
@@ -35,7 +35,7 @@ pub struct SetPackage<'info> {
     pub system_program: Program<'info, System>, 
 }
 
-pub fn set_package_handle(ctx: Context<SetPackage>,token: Pubkey, packages: Vec<u64>, valid: bool) -> Result<()> {
+pub fn set_package_handle(ctx: Context<SetPackage>,token: Pubkey, packages: Vec<PackageItem>, valid: bool) -> Result<()> {
     
     let package_account = &mut ctx.accounts.package_account;
     // require_eq!(package_account.valid, true, DepositErrors::PackageInvalid);

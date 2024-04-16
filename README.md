@@ -2,9 +2,9 @@
 
 ## DEVNET
 
-PROGRAM-ID: [Huj8fVYRHM1asSm58Zy7YuwiUYoWa9nTzj7arVK4V4Uo](https://explorer.solana.com/address/Huj8fVYRHM1asSm58Zy7YuwiUYoWa9nTzj7arVK4V4Uo?cluster=devnet)
+PROGRAM-ID: [3dHnbHNAVfx1u27VSoCszk3xbkrfVLXnP3BCxrp3AZju](https://explorer.solana.com/address/3dHnbHNAVfx1u27VSoCszk3xbkrfVLXnP3BCxrp3AZju?cluster=devnet)
 
-USDC PACKAGE ACCOUNT: [3xHkRXP2bWNf3VkzkUUjXDkWQdbxtC5LSDHnDZPJVLLC](https://explorer.solana.com/address/3xHkRXP2bWNf3VkzkUUjXDkWQdbxtC5LSDHnDZPJVLLC?cluster=devnet)
+USDC PACKAGE ACCOUNT: [9gyQyfDihYJdHkLfKQusMbycyZdPMDqHDuhrrtJXXk25](https://explorer.solana.com/address/9gyQyfDihYJdHkLfKQusMbycyZdPMDqHDuhrrtJXXk25?cluster=devnet)
 
 USDC PROGRAM: [EKri8W96pacGnsWT24dgbvBgoNkEkt873GVttcFFvHLw](https://explorer.solana.com/address/EKri8W96pacGnsWT24dgbvBgoNkEkt873GVttcFFvHLw?cluster=devnet)
 

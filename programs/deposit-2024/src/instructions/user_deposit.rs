@@ -6,7 +6,7 @@ use anchor_spl::{
     token::{transfer, Transfer as SplTransfer},
 };
 
-use crate::{Deposit, DepositErrors, DepositEvent, Package, User, DEPOSIT_ACCOUNT, PACKAGE, USER_ACCOUNT};
+use crate::{ Deposit, DepositErrors, DepositEvent, Package, User, DEPOSIT_ACCOUNT, PACKAGE, USER_ACCOUNT};
 
 #[derive(Accounts)]
 #[instruction(id: u64)]
@@ -71,9 +71,11 @@ pub fn user_deposit_handle(ctx: Context<UserDeposit>, id: u64) -> Result<()> {
 
     // let vault_ata = get_associated_token_address(&deposit.vault, &token_mint.key());
 
-    let amount = package_account.get_package(id);
-    msg!("Amount: {:}", amount);
-    require_neq!(amount, 0, DepositErrors::InputInvalid);
+    let package_item = package_account.get_package(id);
+    msg!("Amount: {:?}", package_item);
+
+
+    require_neq!(package_item.price, 0, DepositErrors::InputInvalid);
 
     // require_eq!(
     //     deposit.check_token_support(&token_mint.key()),
@@ -91,17 +93,17 @@ pub fn user_deposit_handle(ctx: Context<UserDeposit>, id: u64) -> Result<()> {
                 to: deposit_ata.to_account_info(),
             },
         ),
-        amount,
+        package_item.price,
     )?;
 
     msg!("Update user info");
     let clock = Clock::get()?;
 
-    user_deposit.amount += amount;
+    user_deposit.amount += package_item.price;
     emit!(DepositEvent {
         token: token_mint.key(),
         user: user.key(),
-        amount,
+        package_item,
         time: clock.unix_timestamp
     });
 

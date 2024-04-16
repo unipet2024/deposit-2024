@@ -31,7 +31,7 @@ const provider = new AnchorProvider(
 
 const idl = IDL;
 // Address of the deployed program.
-const programId = "Huj8fVYRHM1asSm58Zy7YuwiUYoWa9nTzj7arVK4V4Uo";
+const programId = "3dHnbHNAVfx1u27VSoCszk3xbkrfVLXnP3BCxrp3AZju";
 // Generate the program client from IDL.
 const program = new anchor.Program(idl, programId, provider);
 
@@ -49,29 +49,174 @@ async function set_package() {
   const usdc = new PublicKey("BUJST4dk6fnM5G3FnhTVc3pjxRJE7w2C5YL9XgLbdsXW");
 
   let usdc_packages = [
-    new anchor.BN(1 * 10 ** 6),
-    new anchor.BN(5 * 10 ** 6),
-    new anchor.BN(10 * 10 ** 6),
-    new anchor.BN(15 * 10 ** 6),
-    new anchor.BN(30 * 10 ** 6),
-    new anchor.BN(50 * 10 ** 6),
-    new anchor.BN(108 * 10 ** 6),
+    {
+      id: new anchor.BN(1001),
+      price: new anchor.BN(99 * 10 ** 4),
+      reward: new anchor.BN(60),
+    },
+    {
+      id: new anchor.BN(1002),
+      price: new anchor.BN(499 * 10 ** 4),
+      reward: new anchor.BN(300),
+    },
+    {
+      id: new anchor.BN(1003),
+      price: new anchor.BN(999 * 10 ** 4),
+      reward: new anchor.BN(600),
+    },
+    {
+      id: new anchor.BN(1004),
+      price: new anchor.BN(1499 * 10 ** 4),
+      reward: new anchor.BN(980),
+    },
+    {
+      id: new anchor.BN(1005),
+      price: new anchor.BN(2999 * 10 ** 4),
+      reward: new anchor.BN(1980),
+    },
+    {
+      id: new anchor.BN(1006),
+      price: new anchor.BN(4999 * 10 ** 4),
+      reward: new anchor.BN(3280),
+    },
+    {
+      id: new anchor.BN(1007),
+      price: new anchor.BN(9999 * 10 ** 4),
+      reward: new anchor.BN(6480),
+    },
+    {
+      id: new anchor.BN(1008),
+      price: new anchor.BN(99 * 10 ** 4),
+      reward: new anchor.BN(0),
+    },
+    {
+      id: new anchor.BN(1009),
+      price: new anchor.BN(999 * 10 ** 4),
+      reward: new anchor.BN(3000),
+    },
+    {
+      id: new anchor.BN(1010),
+      price: new anchor.BN(2999 * 10 ** 4),
+      reward: new anchor.BN(3000),
+    },
+
+    {
+      id: new anchor.BN(2001),
+      price: new anchor.BN(99 * 10 ** 4),
+      reward: new anchor.BN(60),
+    },
+    {
+      id: new anchor.BN(2002),
+      price: new anchor.BN(499 * 10 ** 4),
+      reward: new anchor.BN(300),
+    },
+    {
+      id: new anchor.BN(2003),
+      price: new anchor.BN(999 * 10 ** 4),
+      reward: new anchor.BN(600),
+    },
+    {
+      id: new anchor.BN(2004),
+      price: new anchor.BN(1499 * 10 ** 4),
+      reward: new anchor.BN(980),
+    },
+    {
+      id: new anchor.BN(2005),
+      price: new anchor.BN(2999 * 10 ** 4),
+      reward: new anchor.BN(1980),
+    },
+    {
+      id: new anchor.BN(2006),
+      price: new anchor.BN(4999 * 10 ** 4),
+      reward: new anchor.BN(3280),
+    },
+    {
+      id: new anchor.BN(2007),
+      price: new anchor.BN(9999 * 10 ** 4),
+      reward: new anchor.BN(6480),
+    },
+    {
+      id: new anchor.BN(2008),
+      price: new anchor.BN(99 * 10 ** 4),
+      reward: new anchor.BN(0),
+    },
+    {
+      id: new anchor.BN(2009),
+      price: new anchor.BN(999 * 10 ** 4),
+      reward: new anchor.BN(3000),
+    },
+    {
+      id: new anchor.BN(2010),
+      price: new anchor.BN(2999 * 10 ** 4),
+      reward: new anchor.BN(3000),
+    },
+
+    {
+      id: new anchor.BN(3001),
+      price: new anchor.BN(99 * 10 ** 4),
+      reward: new anchor.BN(60),
+    },
+    {
+      id: new anchor.BN(3002),
+      price: new anchor.BN(499 * 10 ** 4),
+      reward: new anchor.BN(300),
+    },
+    {
+      id: new anchor.BN(3003),
+      price: new anchor.BN(999 * 10 ** 4),
+      reward: new anchor.BN(600),
+    },
+    {
+      id: new anchor.BN(3004),
+      price: new anchor.BN(1499 * 10 ** 4),
+      reward: new anchor.BN(980),
+    },
+    {
+      id: new anchor.BN(3005),
+      price: new anchor.BN(2999 * 10 ** 4),
+      reward: new anchor.BN(1980),
+    },
+    {
+      id: new anchor.BN(3006),
+      price: new anchor.BN(4999 * 10 ** 4),
+      reward: new anchor.BN(3280),
+    },
+    {
+      id: new anchor.BN(3007),
+      price: new anchor.BN(9999 * 10 ** 4),
+      reward: new anchor.BN(6480),
+    },
+    {
+      id: new anchor.BN(3008),
+      price: new anchor.BN(99 * 10 ** 4),
+      reward: new anchor.BN(0),
+    },
+    {
+      id: new anchor.BN(3009),
+      price: new anchor.BN(999 * 10 ** 4),
+      reward: new anchor.BN(3000),
+    },
+    {
+      id: new anchor.BN(3010),
+      price: new anchor.BN(2999 * 10 ** 4),
+      reward: new anchor.BN(3000),
+    },
   ];
 
   let usdc_package_pda = getPackageAccount(usdc);
 
-  // try {
-  //   await program.methods
-  //     .setPackages(usdc, usdc_packages, true)
-  //     .accounts({
-  //       deposit: deposit_pda,
-  //       operatorAccount: operator_pda,
-  //       packageAccount: usdc_package_pda,
-  //     })
-  //     .rpc();
-  // } catch (error) {
-  //   console.log(error);
-  // }
+  try {
+    await program.methods
+      .setPackages(usdc, usdc_packages, true)
+      .accounts({
+        deposit: deposit_pda,
+        operatorAccount: operator_pda,
+        packageAccount: usdc_package_pda,
+      })
+      .rpc();
+  } catch (error) {
+    console.log(error);
+  }
 
   let usdc_package_info = await program.account.package.fetch(usdc_package_pda);
   console.log(usdc_package_info);

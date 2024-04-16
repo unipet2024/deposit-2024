@@ -15,7 +15,7 @@ pub use state::*;
 pub use types::*;
 
 
-declare_id!("Huj8fVYRHM1asSm58Zy7YuwiUYoWa9nTzj7arVK4V4Uo");
+declare_id!("3dHnbHNAVfx1u27VSoCszk3xbkrfVLXnP3BCxrp3AZju");
 
 #[program]
 pub mod deposit_2024 {
@@ -28,7 +28,7 @@ pub mod deposit_2024 {
     pub fn set_packages(
         ctx: Context<SetPackage>,
         token: Pubkey,
-        packages: Vec<u64>,
+        packages: Vec<PackageItem>,
         valid: bool,
     ) -> Result<()> {
         set_package::set_package_handle(ctx, token, packages, valid)

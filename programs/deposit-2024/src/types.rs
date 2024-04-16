@@ -13,7 +13,9 @@ pub enum DepositStatus {
     Close,
 }
 
-// #[derive(AnchorSerialize, AnchorDeserialize, Debug, Clone)]
-// pub struct TokenParms {
-//     pub token: Vec<Pubkey>,
-// }
+#[derive(AnchorSerialize, AnchorDeserialize, Debug, Clone, Copy)]
+pub struct PackageItem {
+    pub id: u64,     //8
+    pub price: u64,  //8
+    pub reward: u64, //8
+}

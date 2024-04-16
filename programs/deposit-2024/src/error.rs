@@ -29,7 +29,7 @@ pub enum DepositErrors {
     #[msg("Operator not change")]
     OperatorNotChange,
 
-    #[msg("InputInvalid")]
+    #[msg("Input invalid")]
     InputInvalid,
 }
 

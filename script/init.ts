@@ -1,6 +1,6 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program, AnchorProvider } from "@coral-xyz/anchor";
-import { IDL } from "../target/types/deposit_2024";
+import depositIDL from "../target/idl/deposit_2024.json";
 import { Wallet } from "@coral-xyz/anchor";
 
 // import data from "../keys/dev/holder.json";
@@ -29,11 +29,16 @@ const provider = new AnchorProvider(
 );
 // console.log("Provider: ", provider);
 
-const idl = IDL;
+// const idl = IDL;
 // Address of the deployed program.
-const programId = "Huj8fVYRHM1asSm58Zy7YuwiUYoWa9nTzj7arVK4V4Uo";
+const programId = new PublicKey("3dHnbHNAVfx1u27VSoCszk3xbkrfVLXnP3BCxrp3AZju");
 // Generate the program client from IDL.
-const program = new anchor.Program(idl, programId, provider);
+
+//@ts-ignore
+const program = new anchor.Program(depositIDL,
+  programId,
+  provider
+);
 
 async function init() {
   let owner = provider.wallet as Wallet;
@@ -67,7 +72,8 @@ async function init() {
 const getDepositAccount = () => {
   let [deposit_pda] = anchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from("DEPOSIT_ACCOUNT")],
-    program.programId
+    // program.programId
+    programId
   );
   console.log("Deposit account: : ", deposit_pda.toString());
   return deposit_pda;
@@ -77,7 +83,8 @@ const getOperatorAccount = () => {
   const OPERATOR_ROLE = "OPERATOR_ROLE";
   const [mint] = anchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from(OPERATOR_ROLE)],
-    program.programId
+    // program.programId
+    programId
   );
   console.log("operator_account: ", mint.toString());
   return mint;
@@ -87,7 +94,8 @@ const getAdminAccount = () => {
   const ADMIN_ROLE = "ADMIN_ROLE";
   const [mint] = anchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from(ADMIN_ROLE)],
-    program.programId
+    // program.programId
+    programId
   );
   console.log("admin_account: ", mint.toString());
 

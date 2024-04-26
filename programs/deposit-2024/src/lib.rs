@@ -47,7 +47,7 @@ pub mod deposit_2024 {
     // }
 
     pub fn deposit(ctx: Context<UserDeposit>, amount: u64) -> Result<()> {
-        user_deposit::user_deposit_handle(ctx, amount)
+        user_deposit_spl::user_deposit_handle(ctx, amount)
     }
 
     pub fn withdraw(ctx: Context<Withdraw>, amount: u64) -> Result<()> {

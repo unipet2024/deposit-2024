@@ -38,8 +38,6 @@ pub struct UserDeposit<'info> {
     pub token_mint: Account<'info, Mint>,
 
     #[account(
-        init_if_needed,
-        payer=user,
         associated_token::mint = token_mint, 
         associated_token::authority = user
     )]

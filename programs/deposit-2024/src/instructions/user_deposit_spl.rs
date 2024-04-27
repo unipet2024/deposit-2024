@@ -22,7 +22,7 @@ pub struct UserDeposit<'info> {
         init_if_needed,
         space =   8+20,
         payer = user,
-        seeds = [USER_ACCOUNT, token_mint.key().as_ref(), user.key().as_ref()],
+        seeds = [USER_ACCOUNT, user.key().as_ref()],
         // seeds = [USER_ACCOUNT],
         bump,
     )]
@@ -97,7 +97,7 @@ pub fn user_deposit_handle(ctx: Context<UserDeposit>, id: u64) -> Result<()> {
     msg!("Update user info");
     let clock = Clock::get()?;
 
-    user_deposit.amount += package_item.price;
+    // user_deposit.amount += package_item.price;
     emit!(DepositEvent {
         token: token_mint.key(),
         user: user.key(),

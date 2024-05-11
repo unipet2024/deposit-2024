@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-use crate::{AuthRole, AuthorityRole, Deposit, ADMIN_ROLE, DEPOSIT_ACCOUNT, OPERATOR_ROLE};
+use crate::{AuthRole, AuthorityRole, Deposit, ADMIN_ROLE, DEPOSIT_ACCOUNT};
 
 
 #[derive(Accounts)]
@@ -12,7 +12,7 @@ pub struct InitDeposit<'info> {
         seeds = [DEPOSIT_ACCOUNT],
         bump
     )]
-    pub deposit: Box<Account<'info, Deposit>>,
+    pub deposit_account: Box<Account<'info, Deposit>>,
     #[account(
         init_if_needed,
         space = 60,
@@ -21,47 +21,25 @@ pub struct InitDeposit<'info> {
         bump,
     )]
     pub admin_account:  Account<'info, AuthorityRole>,
-    #[account(
-        init_if_needed,
-        space = 60,
-        payer = authority,
-        seeds = [OPERATOR_ROLE], 
-        bump,
-    )]
-    pub operator_account:  Account<'info, AuthorityRole>,
 
     #[account(mut, signer)]
     pub authority: Signer<'info>,
     pub system_program: Program<'info, System>, 
 }
 
-pub fn init_handle(ctx: Context<InitDeposit>) -> Result<()> {
-    let deposit = &mut ctx.accounts.deposit;
+pub fn init_handle(ctx: Context<InitDeposit>, operator_wallet: Pubkey) -> Result<()> {
+    let deposit = &mut ctx.accounts.deposit_account;
     let admin_account = &mut ctx.accounts.admin_account;
-    let operator_account = &mut ctx.accounts.operator_account;
+    let authority = &ctx.accounts.authority;
 
 
-    deposit.init(
-        admin_account.key(),
-        operator_account.key(),
-        // vault,
-        ctx.bumps.deposit,
-        // &tokens.token,
+    deposit.init( authority.key(), operator_wallet, ctx.bumps.deposit_account)?;
+
+    admin_account.initialize(
+        &authority.key(),
+        ctx.bumps.admin_account,
+        AuthRole::Admin,
     )?;
-
-    //SET ADMIN
-   //SET ADMIN
-   let authorities = vec![ctx.accounts.authority.key()];
-   admin_account.initialize(
-       &authorities,
-       ctx.bumps.admin_account,
-       AuthRole::Admin,
-   )?;
-   operator_account.initialize(
-       &authorities,
-       ctx.bumps.operator_account,
-       AuthRole::Operator,
-   )?;
 
     Ok(())
 }

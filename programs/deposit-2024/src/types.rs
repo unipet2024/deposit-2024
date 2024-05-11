@@ -13,9 +13,33 @@ pub enum DepositStatus {
     Close,
 }
 
+
 #[derive(AnchorSerialize, AnchorDeserialize, Debug, Clone, Copy)]
-pub struct PackageItem {
-    pub id: u64,     //8
-    pub price: u64,  //8
-    pub reward: u64, //8
+pub struct PackageInitParams{
+    pub id: u16,
+    pub price: u16, //4 price in USDT 4 decimals
 }
+
+#[derive(AnchorSerialize, AnchorDeserialize, Debug, Clone)]
+
+pub struct TokenTransferParams<'a: 'b, 'b> {
+    /// source
+    /// CHECK: account checked in CPI
+    pub source: AccountInfo<'a>,
+    /// destination
+    /// CHECK: account checked in CPI
+    pub destination: AccountInfo<'a>,
+    /// amount
+    pub amount: u64,
+    /// authority
+    /// CHECK: account checked in CPI
+    pub authority: AccountInfo<'a>,
+    /// authority_signer_seeds
+    pub authority_signer_seeds: &'b [&'b [u8]],
+    /// token_program
+    /// CHECK: account checked in CPI
+    pub token_program: AccountInfo<'a>,
+}
+
+
+

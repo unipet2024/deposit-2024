@@ -14,6 +14,15 @@ pub enum DepositErrors {
     #[msg("Admin account invalid")]
     AdminAccountInvalid,
 
+    #[msg("Admin existed or max admin")]
+    AdminAccountExisted,
+
+    #[msg("Currency existed")]
+    CurrencyExisted,
+
+    #[msg("Package existed")]
+    PackageExisted,
+
     #[msg("Operator account invalid")]
     OperatorAccountInvalid,
 
@@ -31,6 +40,11 @@ pub enum DepositErrors {
 
     #[msg("Input invalid")]
     InputInvalid,
+
+    #[msg("Currency is not support")]
+    CurrencyNotSupport,
+
+
 }
 
 impl From<DepositErrors> for ProgramError {

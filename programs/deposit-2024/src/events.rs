@@ -1,12 +1,11 @@
 use anchor_lang::prelude::*;
 
-use crate::{AuthRole, DepositStatus, PackageItem};
+use crate::{AuthRole, DepositStatus};
 
 #[event]
 pub struct DepositEvent {
-    pub token: Pubkey,
+    pub package: u16,
     pub user: Pubkey,
-    pub package_item: PackageItem,
     pub time: i64,
 }
 
@@ -14,7 +13,12 @@ pub struct DepositEvent {
 pub struct SetAuthorityEvent {
     pub admin: Pubkey,
     pub role: AuthRole,
-    pub operators: Vec<Pubkey>,
+    pub time: i64,
+}
+
+#[event]
+pub struct ChangeOperatorWalletEvent {
+    pub wallet: Pubkey,
     pub time: i64,
 }
 
@@ -29,6 +33,5 @@ pub struct SetStatusEvent {
 pub struct SetPackageEvent {
     pub operator: Pubkey,
     pub token: Pubkey,
-    pub packages: Vec<PackageItem>,
     pub time: i64,
 }

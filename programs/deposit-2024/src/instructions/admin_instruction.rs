@@ -1,92 +1,63 @@
 use anchor_lang::prelude::*;
 
-use crate::{AuthRole, AuthorityRole, Deposit, DepositErrors, SetAuthorityEvent, ADMIN_ROLE, DEPOSIT_ACCOUNT, OPERATOR_ROLE};
+use crate::{AuthRole, AuthorityRole, ChangeOperatorWalletEvent, Deposit, DepositErrors, ADMIN_ROLE, DEPOSIT_ACCOUNT};
 
 #[derive(Accounts)]
-pub struct AdminInstruction<'info> {
-    #[account(
-        seeds = [DEPOSIT_ACCOUNT],
-        bump=deposit.bump,
-        constraint = deposit.admin == admin_account.key() @ DepositErrors::AdminAccountInvalid,
-        constraint = deposit.operator == operator_account.key() @ DepositErrors::OperatorAccountInvalid,
-    )]
-    pub deposit: Box<Account<'info, Deposit>>,
-
+pub struct AdminSetupInstruction<'info> {
     #[account(
         mut,
+        seeds = [DEPOSIT_ACCOUNT],
+        bump= deposit_account.bump,
+        constraint = deposit_account.is_admin(payer.key()) @ DepositErrors::AdminAccountInvalid,
+    )]
+    pub deposit_account: Box<Account<'info, Deposit>>,
+
+    #[account(
         seeds = [ADMIN_ROLE], 
-        bump=admin_account.bump,
-        constraint = admin_account.is_authority(admin.key) == true @ DepositErrors::OnlyAdmin,
+        bump = admin_account.bump,
+        constraint = admin_account.is_authority(payer.key) == true @ DepositErrors::OnlyAdmin,
         constraint = admin_account.role == AuthRole::Admin @ DepositErrors::OnlyAdmin,
         constraint = admin_account.status == true @ DepositErrors::OnlyAdmin,
     )]
     pub admin_account:  Account<'info, AuthorityRole>,
-
-    #[account(
-        mut,
-        seeds = [OPERATOR_ROLE], 
-        bump=operator_account.bump,
-        constraint = operator_account.role == AuthRole::Operator @ DepositErrors::OnlyOperator,
-        constraint = operator_account.status == true @ DepositErrors::OnlyOperator,
-    )]
-    pub operator_account:  Account<'info, AuthorityRole>,
-
     #[account(mut, signer)]
-    pub admin: Signer<'info>,
+    pub payer: Signer<'info>,
     pub system_program: Program<'info, System>, 
 }
 
-pub fn set_authority_handler(ctx: Context<AdminInstruction>, role: AuthRole, operators: Vec<Pubkey>) -> Result<()> {
-    match role {
-        AuthRole::Operator => set_operator_handler(ctx, operators),
-        AuthRole::Admin => set_admin_handler(ctx, operators),
-    }
-}
 
-fn set_operator_handler(ctx: Context<AdminInstruction>, operators: Vec<Pubkey>) -> Result<()> {
-    let operator_account = &mut ctx.accounts.operator_account;
+pub fn handle_change_operator_wallet(ctx: Context<AdminSetupInstruction>, operators: Pubkey) -> Result<()> {
 
-    for operator in operators.iter(){
-        msg!("{:},", *operator)
-    }
+    let deposit = &mut ctx.accounts.deposit_account;
+    deposit.set_operator(operators)?;
 
-    operator_account.set_authorities(&operators)?;
-
-    emit!(SetAuthorityEvent{
-        admin: ctx.accounts.admin.key(),
-        role: AuthRole::Operator,
-        operators,
-        time: Clock::get()?.unix_timestamp
+    emit!(ChangeOperatorWalletEvent{
+        wallet: operators,
+        time:Clock::get()?.unix_timestamp
     });
-
     Ok(())
 }
 
-fn set_admin_handler(ctx: Context<AdminInstruction>, admins: Vec<Pubkey>) -> Result<()> {
-    let admin_account = &mut ctx.accounts.admin_account;
+pub fn handle_add_currency(ctx: Context<AdminSetupInstruction>, currency: Pubkey) -> Result<()> {
 
-    admin_account.set_authorities(&admins)?;
+    let deposit = &mut ctx.accounts.deposit_account;
+    deposit.add_currency(currency)?;
 
-    emit!(SetAuthorityEvent{
-        admin: ctx.accounts.admin.key(),
-        role: AuthRole::Admin,
-        operators: admins,
-        time: Clock::get()?.unix_timestamp
+    emit!(ChangeOperatorWalletEvent{
+        wallet: currency,
+        time:Clock::get()?.unix_timestamp
     });
-
     Ok(())
 }
 
-// pub fn set_status_handler(ctx: Context<AdminInstruction>, status: &DepositStatus) -> Result<()> {
-//     let deposit = &mut ctx.accounts.deposit;
+pub fn handle_remove_currency(ctx: Context<AdminSetupInstruction>, currency: Pubkey) -> Result<()> {
 
-//     deposit.set_status(*status);
+    let deposit = &mut ctx.accounts.deposit_account;
+    deposit.remove_currency(currency)?;
 
-//     emit!(SetStatusEvent{
-//         admin: ctx.accounts.admin.key(),
-//         status: *status,
-//         time: Clock::get()?.unix_timestamp
-//     });
-
-//     Ok(())
-// }
+    emit!(ChangeOperatorWalletEvent{
+        wallet: currency,
+        time:Clock::get()?.unix_timestamp
+    });
+    Ok(())
+}

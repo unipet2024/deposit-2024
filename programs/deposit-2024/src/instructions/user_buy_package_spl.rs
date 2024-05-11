@@ -1,3 +1,5 @@
+use std::ops::Mul;
+
 use anchor_lang::prelude::*;
 use anchor_spl::{associated_token::AssociatedToken, token::{Mint, Token, TokenAccount}};
 
@@ -9,78 +11,67 @@ use anchor_spl::{
 use crate::{ Deposit, DepositErrors, DepositEvent, Package, User, DEPOSIT_ACCOUNT, PACKAGE, USER_ACCOUNT};
 
 #[derive(Accounts)]
-#[instruction(id: u64)]
-pub struct UserDeposit<'info> {
+#[instruction(package_id: u16)]
+pub struct UserBuyPackage<'info> {
     #[account(
         seeds = [DEPOSIT_ACCOUNT],
-        bump,
-        // constraint = deposit.status == DepositStatus::Open @ DepositErrors::DepositClosed,
+        bump = deposit_account.bump,
+        constraint = deposit_account.is_support_currency(token_mint.key()) @ DepositErrors::CurrencyNotSupport,
     )]
-    pub deposit: Box<Account<'info, Deposit>>,
+    pub deposit_account: Box<Account<'info, Deposit>>,
 
     #[account(
-        init_if_needed,
-        space =   8+20,
-        payer = user,
         seeds = [USER_ACCOUNT, user.key().as_ref()],
-        // seeds = [USER_ACCOUNT],
         bump,
     )]
     pub user_deposit: Account<'info, User>,
 
     #[account(
-        seeds = [PACKAGE, token_mint.key().as_ref()],
+        seeds = [PACKAGE, package_id.to_le_bytes().as_ref()],
         bump,
-        constraint = package_account.valid == true
     )]
     pub package_account:  Account<'info, Package>,
 
-    pub token_mint: Account<'info, Mint>,
 
     #[account(
+        mut,
         associated_token::mint = token_mint, 
         associated_token::authority = user
     )]
     pub user_ata: Account<'info, TokenAccount>,
 
     #[account(
-        mut,
+        init_if_needed,
+        payer = user,
         associated_token::mint = token_mint,
-        associated_token::authority = deposit,
+        associated_token::authority = deposit_account,
     )]
     pub deposit_ata: Account<'info, TokenAccount>,
-
+    pub token_mint: Account<'info, Mint>,
     #[account(mut, signer)]
-    pub user: Signer<'info>,
-    
+    pub user: Signer<'info>, 
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>, 
     pub associated_token_program: Program<'info, AssociatedToken>,
 }
 
-pub fn user_deposit_handle(ctx: Context<UserDeposit>, id: u64) -> Result<()> {
+pub fn handle_user_buy_package(ctx: Context<UserBuyPackage>, package_id: u16) -> Result<()> {
     // let deposit = &ctx.accounts.deposit;
     let user_deposit = &mut ctx.accounts.user_deposit;
-    let token_mint = &mut ctx.accounts.token_mint;
-    let user_ata = &mut ctx.accounts.user_ata;
-    let deposit_ata = &mut ctx.accounts.deposit_ata;
+    let token_mint = &ctx.accounts.token_mint;
+
     let user = &mut ctx.accounts.user;
     let package_account = &ctx.accounts.package_account;
 
-    // let vault_ata = get_associated_token_address(&deposit.vault, &token_mint.key());
-
-    let package_item = package_account.get_package(id);
-    msg!("Amount: {:?}", package_item);
 
 
-    require_neq!(package_item.price, 0, DepositErrors::InputInvalid);
+    let price  = package_account.price as u64;
+    let decimal = token_mint.decimals ;
 
-    // require_eq!(
-    //     deposit.check_token_support(&token_mint.key()),
-    //     true,
-    //     DepositErrors::TokenNotSupport
-    // );
+    let amount = price.mul(10u64.pow(decimal as u32));
 
+    let user_ata = &mut ctx.accounts.user_ata;
+    let deposit_ata = &mut ctx.accounts.deposit_ata;
     msg!("Transfer from User to Deposit");
     transfer(
         CpiContext::new(
@@ -91,17 +82,18 @@ pub fn user_deposit_handle(ctx: Context<UserDeposit>, id: u64) -> Result<()> {
                 to: deposit_ata.to_account_info(),
             },
         ),
-        package_item.price,
+        amount,
     )?;
+    msg!("update user deposit account");
+    user_deposit.add_package_bought(package_id)?;
 
-    msg!("Update user info");
+    //emit event
     let clock = Clock::get()?;
 
     // user_deposit.amount += package_item.price;
     emit!(DepositEvent {
-        token: token_mint.key(),
+        package: package_id,
         user: user.key(),
-        package_item,
         time: clock.unix_timestamp
     });
 

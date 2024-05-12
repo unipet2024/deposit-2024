@@ -1,4 +1,5 @@
-use std::ops::{Div, Mul};
+
+use std::ops::Div;
 
 use anchor_lang::prelude::*;
 use anchor_spl::{associated_token::AssociatedToken, token::{Mint, Token, TokenAccount}};
@@ -8,6 +9,7 @@ use anchor_spl::{
     // associated_token::get_associated_token_address,
     token::{transfer, Transfer as SplTransfer},
 };
+use solana_safe_math::SafeMath;
 
 use crate::{ Deposit, DepositErrors, DepositEvent, Package, User, DEPOSIT_ACCOUNT, PACKAGE, USER_ACCOUNT};
 
@@ -61,6 +63,7 @@ pub struct UserBuyPackageBySpl<'info> {
 #[instruction(package_id: u16)]
 pub struct UserBuyPackageBySol<'info> {
     #[account(
+        mut,
         seeds = [DEPOSIT_ACCOUNT],
         bump = deposit_account.bump,
     )]
@@ -77,19 +80,16 @@ pub struct UserBuyPackageBySol<'info> {
 
     #[account(
         seeds = [PACKAGE, package_id.to_le_bytes().as_ref()],
-        bump,
+        bump = package_account.bump,
     )]
     pub package_account:  Account<'info, Package>,
-
     /// CHECK: get price from chainlink
     pub chainlink_program: AccountInfo<'info>,
     /// CHECK: get price from chainlink
     pub chainlink_feed: AccountInfo<'info>,
     #[account(mut, signer)]
     pub user: Signer<'info>, 
-    pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>, 
-    pub associated_token_program: Program<'info, AssociatedToken>,
 }
 
 
@@ -106,13 +106,13 @@ pub fn handle_user_buy_package_by_spl(ctx: Context<UserBuyPackageBySpl>, package
     let price  = package_account.price as u64;
     let decimal = token_mint.decimals ;
 
-    let amount = price.mul(10u64.pow(decimal as u32)).div(10000); // price in 4 decimals
+    let amount = price.safe_mul(10u64.pow(decimal as u32))?.safe_div(10000)?; // price in 4 decimals
 
     let user_ata = &mut ctx.accounts.user_ata;
     let deposit_ata = &mut ctx.accounts.deposit_ata;
 
     msg!("Transfer from User to Deposit");
-    
+
     transfer(
         CpiContext::new(
             ctx.accounts.token_program.to_account_info(),
@@ -152,21 +152,27 @@ pub fn handle_user_buy_package_by_sol(ctx: Context<UserBuyPackageBySol>, package
     let user = &mut ctx.accounts.user;
 
     let package_price  = package_account.price as u64;
+    msg!("package_price: {}", package_price);
     let decimal = 9;
 
     let round = chainlink::latest_round_data(ctx.accounts.chainlink_program.to_account_info(), ctx.accounts.chainlink_feed.to_account_info())?;
 
     
-    let sol_price = round.answer; //decimal 8
+    let sol_price = round.answer.div(100000000); //decimal 8
+    msg!("sol_price: {}", sol_price as u64);
 
     //price in 4 decimals, price in 8 decimals,  1 sol = 10^9 lamports,
-    let sol_amount  = package_price.div(sol_price as u64).mul(10000).mul(10u64.pow(decimal)) ;// price in 4 decimals
+    // let sol_amount  = package_price.div(sol_price as u64).mul(10000).mul(10u64.pow(decimal)) ;// price in 4 decimals
+    //log sol
+    let sol_amount  = package_price.safe_div(sol_price as u64)?.safe_mul(10u64.pow(decimal))?.safe_div(10000)?;
+    msg!("sol_amount: {}", sol_amount);
 
+    
     //get user lam port
     let user_lamport = user.get_lamports();
     //check balance
 
-    require!(user_lamport >= sol_amount, DepositErrors::InsufficientAmount);
+    require!(user_lamport >= sol_amount , DepositErrors::InsufficientAmount);
 
 
     //transfer sol to deposit
@@ -175,6 +181,8 @@ pub fn handle_user_buy_package_by_sol(ctx: Context<UserBuyPackageBySol>, package
         &deposit.key(),
         sol_amount,
     );
+
+
     anchor_lang::solana_program::program::invoke(
         &instruction,
         &[user.to_account_info(), deposit.to_account_info()],

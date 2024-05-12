@@ -20,7 +20,8 @@ import {
   Keypair,
   PublicKey,
 } from "@solana/web3.js";
-import { getAdminRolePda, getDepositPda, getOperatorRolePda } from "./utils";
+import { getAdminRolePda, getDepositPda, getOperatorRolePda, getPackagePda, getUserPda } from "./utils";
+const CHAINLINK_PROGRAM_ID = "HEvSKofvBgfaexv23kMabbYqxasxU3mQ4ibBMEmJWHny";//devnet and mainnet chainlink program
 
 describe("deposit-2024", () => {
   let provider = anchor.AnchorProvider.env();
@@ -89,9 +90,39 @@ describe("deposit-2024", () => {
   //   console.log(JSON.stringify(deposit_pda_info));
   // });
 
-  it("deposit", async () => {
+  it("deposit by sol", async () => {
     let deposit_pda_info = await program.account.deposit.fetch(deposit_pda);
-    console.log(JSON.stringify(deposit_pda_info));
+
+  console.log("deposit ", deposit_pda.toString());
+  
+    
+    const package_id = 1007;
+    const packagePda = getPackagePda(programId, package_id);
+
+    const packageData = await program.account.package.fetch(packagePda);
+
+    console.log("Package data: ", JSON.stringify(packageData));
+    const userPda = getUserPda(programId, provider.wallet.publicKey);
+    console.log("User PDA: ", userPda.toString());
+    //get userdata
+    const userData = await program.account.user.fetch(userPda);
+    console.log("User data: ", JSON.stringify(userData));
+    console.log("Package PDA: ", packagePda.toString());
+
+
+    const tx = await program.methods.userBuyPackageBySol(package_id).accounts({
+      depositAccount: deposit_pda,
+      chainlinkProgram: new PublicKey(CHAINLINK_PROGRAM_ID),
+      chainlinkFeed: new PublicKey("99B2bTijsU6f1GCT73HmdR7HCFFjGMBcPZY6jZ96ynrR"), //keypair SOL/usd,
+      packageAccount: packagePda,
+      userDeposit: userPda,
+      user: provider.wallet.publicKey,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    }).rpc();
+
+    console.log("Deposit by sol tx: ", tx);
+
+   
   })
 
 

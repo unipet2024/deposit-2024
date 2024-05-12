@@ -41,9 +41,9 @@ export const getPackagePda =  ( programId: PublicKey, id: number): PublicKey => 
     return mint;
 }
 
-export const getUserPda =  ( programId: PublicKey): PublicKey => {
+export const getUserPda =  ( programId: PublicKey, user: PublicKey): PublicKey => {
     const [mint, _] =   anchor.web3.PublicKey.findProgramAddressSync(
-        [Buffer.from(USER_ACCOUNT)],
+        [Buffer.from(USER_ACCOUNT), user.toBuffer()],
         programId
       );
     return mint; 

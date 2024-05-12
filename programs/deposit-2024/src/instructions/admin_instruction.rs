@@ -8,20 +8,20 @@ pub struct AdminSetupInstruction<'info> {
         mut,
         seeds = [DEPOSIT_ACCOUNT],
         bump= deposit_account.bump,
-        constraint = deposit_account.is_admin(payer.key()) @ DepositErrors::AdminAccountInvalid,
+        constraint = deposit_account.is_admin(admin.key()) @ DepositErrors::AdminAccountInvalid,
     )]
     pub deposit_account: Box<Account<'info, Deposit>>,
 
     #[account(
-        seeds = [ADMIN_ROLE], 
+        seeds = [ADMIN_ROLE, admin.key().as_ref()], 
         bump = admin_account.bump,
-        constraint = admin_account.is_authority(payer.key) == true @ DepositErrors::OnlyAdmin,
+        constraint = admin_account.is_authority(admin.key) == true @ DepositErrors::OnlyAdmin,
         constraint = admin_account.role == AuthRole::Admin @ DepositErrors::OnlyAdmin,
         constraint = admin_account.status == true @ DepositErrors::OnlyAdmin,
     )]
     pub admin_account:  Account<'info, AuthorityRole>,
     #[account(mut, signer)]
-    pub payer: Signer<'info>,
+    pub admin: Signer<'info>,
     pub system_program: Program<'info, System>, 
 }
 

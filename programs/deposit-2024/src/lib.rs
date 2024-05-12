@@ -26,9 +26,15 @@ pub mod deposit_2024 {
     pub fn init(ctx: Context<InitDeposit>,  operator_wallet: Pubkey) -> Result<()> {
         init_deposit::init_handle(ctx,  operator_wallet)
     }
+    pub fn add_currency(ctx: Context<AdminSetupInstruction>, currency: Pubkey) -> Result<()> {
+        admin_instruction::handle_add_currency(ctx, currency)
+    }
 
+    pub fn add_operator(ctx: Context<SetOperatorInstruction>, new_operator: Pubkey) -> Result<()> {
+        set_operator::handle_set_operator(ctx, new_operator)
+    }
     pub fn create_packages(
-        ctx: Context<OperatorCreatePackage>,
+        ctx: Context<CreatePackage>,
         data: PackageInitParams,
     ) -> Result<()> {
         operator_instruction::handle_create_package(ctx, data)
@@ -41,12 +47,12 @@ pub mod deposit_2024 {
         set_admin::handle_set_admin(ctx, operators)
     }
 
-    // pub fn set_status(ctx: Context<AdminInstruction>, status: DepositStatus) -> Result<()> {
-    //     admin_instruction::set_status_handler(ctx, &status)
-    // }
+    pub fn user_buy_package_by_spl(ctx: Context<UserBuyPackageBySpl>, package_id: u16) -> Result<()> {
+        user_buy_package::handle_user_buy_package_by_spl(ctx, package_id )
+    }
 
-    pub fn buy_package(ctx: Context<UserBuyPackage>, package_id: u16) -> Result<()> {
-        user_buy_package_spl::handle_user_buy_package(ctx, package_id )
+    pub fn user_buy_package_by_sol(ctx: Context<UserBuyPackageBySol>, package_id: u16) -> Result<()> {
+        user_buy_package::handle_user_buy_package_by_sol(ctx, package_id )
     }
 
     pub fn withdraw(ctx: Context<Withdraw>, amount: u64) -> Result<()> {

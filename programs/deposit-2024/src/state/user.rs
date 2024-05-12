@@ -9,7 +9,8 @@ pub struct User {
 }
 
 impl User {
-    pub fn initialize(&mut self, bump: u8) -> Result<()> {
+    pub fn initialize(&mut self, owner: &Pubkey, bump: u8) -> Result<()> {
+        self.owner = *owner;
         self.bump = bump;
         self.bought_package = vec![];
         Ok(())

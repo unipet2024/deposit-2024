@@ -82,7 +82,6 @@ pub fn handle_set_admin(ctx: Context<SetAdminInstruction>, new_admin: Pubkey) ->
 
 pub fn handle_close_admin(ctx: Context<CloseAdminInstruction>, _admin: Pubkey) -> Result<()> {
     let deposit = &mut ctx.accounts.deposit_account;
-   
     deposit.remove_admin(_admin)?;
     Ok(())
 }

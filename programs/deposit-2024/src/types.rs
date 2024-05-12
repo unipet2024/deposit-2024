@@ -17,10 +17,10 @@ pub enum DepositStatus {
 #[derive(AnchorSerialize, AnchorDeserialize, Debug, Clone, Copy)]
 pub struct PackageInitParams{
     pub id: u16,
-    pub price: u16, //4 price in USDT 4 decimals
+    pub price: u32, //4 price in USDT 4 decimals
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Debug, Clone)]
+
 
 pub struct TokenTransferParams<'a: 'b, 'b> {
     /// source

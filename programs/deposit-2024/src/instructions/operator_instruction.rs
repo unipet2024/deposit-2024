@@ -8,8 +8,7 @@ use anchor_lang::prelude::Signer;
 #[derive(Accounts)]
 #[instruction(param: PackageInitParams)]
 
-pub struct OperatorCreatePackage<'info> {
- 
+pub struct CreatePackage<'info> {
     #[account(
         mut,
         seeds = [DEPOSIT_ACCOUNT],
@@ -26,7 +25,7 @@ pub struct OperatorCreatePackage<'info> {
     pub package_account:  Account<'info, Package>,
 
     #[account(
-        seeds = [OPERATOR_ROLE], 
+        seeds = [OPERATOR_ROLE, operator.key().as_ref()], 
         bump = operator_account.bump,
         constraint = operator_account.is_authority(operator.key) == true @ DepositErrors::OnlyOperator,
         constraint = operator_account.role == AuthRole::Operator @ DepositErrors::OnlyOperator,
@@ -45,7 +44,7 @@ pub struct OperatorCreatePackage<'info> {
 
 
 
-pub fn handle_create_package(ctx: Context<OperatorCreatePackage>, data: PackageInitParams) -> Result<()> {
+pub fn handle_create_package(ctx: Context<CreatePackage>, data: PackageInitParams) -> Result<()> {
     let package_account = &mut ctx.accounts.package_account;
     let deposit_account = &mut ctx.accounts.deposit_account;
     

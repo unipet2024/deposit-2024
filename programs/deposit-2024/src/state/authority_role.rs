@@ -6,7 +6,7 @@ use crate::AuthRole;
 pub struct AuthorityRole {
     pub bump: u8,//1
     pub status: bool,//1
-    pub owner: Pubkey, //4 + 32*5 =
+    pub owner: Pubkey, //4 + 32 =
     pub role: AuthRole,
 }
 impl AuthorityRole {

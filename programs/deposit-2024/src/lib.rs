@@ -17,7 +17,7 @@ pub use types::*;
 pub use utils::*;
 
 
-declare_id!("7G5ruteouLxPrkqRo4pe8DCMw78JYo5bsnV7jyLkUFKx");
+declare_id!("svD4CSs44LWZEM6yKfHNLNhCVfZPWARtmcdcsxcfCXV");
 
 #[program]
 pub mod deposit_2024 {

@@ -5,7 +5,7 @@ seeds = false
 skip-lint = false
 
 [programs.devnet]
-deposit_2024 = "7G5ruteouLxPrkqRo4pe8DCMw78JYo5bsnV7jyLkUFKx"
+deposit_2024 = "svD4CSs44LWZEM6yKfHNLNhCVfZPWARtmcdcsxcfCXV"
 
 [registry]
 url = "https://api.apr.dev"

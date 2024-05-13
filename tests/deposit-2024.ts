@@ -157,7 +157,7 @@ describe("deposit-2024", () => {
   //   console.log("Package data: ", JSON.stringify(packageData));
   //   const userPda = getUserPda(programId, provider.wallet.publicKey);
   //   console.log("User PDA: ", userPda.toString());
-  //   const token_mint  = deposit_pda_info.supportCurrency[0];
+  //   const token_mint  = new PublicKey("BUJST4dk6fnM5G3FnhTVc3pjxRJE7w2C5YL9XgLbdsXW");
   //   console.log("Token mint: ", token_mint.toString());
     
   //   // console.log("user_ata:", getAssociatedTokenAddressSync(token_mint, provider.wallet.publicKey, true));

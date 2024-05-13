@@ -62,4 +62,11 @@ pub mod deposit_2024 {
     pub fn admin_withdraw_sol(ctx: Context<AdminWithdrawSol>) -> Result<()> {
         admin_withdraw::admin_withdraw_sol_handle(ctx)
     }
+
+    pub fn operator_withdraw_spl(ctx: Context<OperatorWithdrawSpl>, amount: u64) -> Result<()> {
+        operator_withdraw::withdraw_spl_handle(ctx, amount)
+    }
+    pub fn operator_withdraw_sol(ctx: Context<WithdrawSol>, amount: u64) -> Result<()> {
+        operator_withdraw::withdraw_sol_handle(ctx, amount)
+    }
 }

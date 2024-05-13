@@ -45,7 +45,9 @@ pub enum DepositErrors {
     CurrencyNotSupport,
 
     #[msg("Insufficient Amount")]
-    InsufficientAmount
+    InsufficientAmount,
+    #[msg("Amount must be greater than 0")]
+    InvalidAmount
 
 
 }

@@ -12,7 +12,7 @@ pub fn _transfer_token<'a>(params: &'a TokenTransferParams) -> Result<()> {
         authority: params.authority.to_account_info(),
     };
     let cpi_program = params.token_program.to_account_info();
-    let singer = [params.authority_signer_seeds];
+    let singer: [&[&[u8]]; 1] = [params.authority_signer_seeds];
     let cpi_ctx = CpiContext::new(cpi_program, transfer_instruction).with_signer(&singer);
     anchor_spl::token::transfer(cpi_ctx, params.amount)?;
     Ok(())

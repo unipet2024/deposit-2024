@@ -30,6 +30,7 @@ impl Deposit {
         self.bump = bump;
         self.admin_role = vec![admin];
         self.version = "1.0.0".to_string();
+        self.support_currency = vec![Pubkey::default()];
         Ok(())
     }
     pub fn set_admin(&mut self, admin: Pubkey) -> Result<()> {

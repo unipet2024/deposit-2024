@@ -35,3 +35,10 @@ pub struct SetPackageEvent {
     pub token: Pubkey,
     pub time: i64,
 }
+
+#[event]
+pub struct WithdrawEvent {
+    pub address: Pubkey,
+    pub amount: u64,
+    pub time: i64,
+}

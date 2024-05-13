@@ -9,6 +9,9 @@ import {
   getOrCreateAssociatedTokenAccount,
   mintTo,
   transfer,
+  getAssociatedTokenAddressSync,
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 
 import { assert, expect } from "chai";
@@ -57,7 +60,7 @@ describe("deposit-2024", () => {
   // });
 
 
-  // it("add_operator", async () => {
+  // it("setup_operator", async () => {
   //   const operator =  new PublicKey("2z6bJQHscXWHNQAB8Q3YA1RiKg2QBn84Uax3FSANtvDU"); //wallet test api gateway
 
   //   const operator_pda = getOperatorRolePda(programId, operator);
@@ -90,10 +93,28 @@ describe("deposit-2024", () => {
   //   console.log(JSON.stringify(deposit_pda_info));
   // });
 
+  // it("set_ new admin", async () => {  
+  //   const new_admin = new PublicKey("2z6bJQHscXWHNQAB8Q3YA1RiKg2QBn84Uax3FSANtvDU")
+  //     // const usdc = new PublicKey("BUJST4dk6fnM5G3FnhTVc3pjxRJE7w2C5YL9XgLbdsXW")
+  
+  //     const admin_pda = getAdminRolePda(programId, provider.wallet.publicKey);
+  //     const tx = await program.methods.setAdminAuthority(new_admin).accounts({
+  //       depositAccount: deposit_pda,
+  //       newAdminAccount: getAdminRolePda(programId,new_admin),
+  //       adminAccount: admin_pda,
+  //       authority: provider.wallet.publicKey,
+  //       systemProgram: anchor.web3.SystemProgram.programId,
+       
+  //     }).rpc();
+  //     console.log("set admin tx: ", tx);
+  //     let deposit_pda_info = await program.account.deposit.fetch(deposit_pda);
+  //     console.log(JSON.stringify(deposit_pda_info));
+  //   });
+
   it("deposit by sol", async () => {
     let deposit_pda_info = await program.account.deposit.fetch(deposit_pda);
 
-  console.log("deposit ", deposit_pda.toString());
+    console.log("deposit ",JSON.stringify(deposit_pda_info));
   
     
     const package_id = 1007;
@@ -125,7 +146,61 @@ describe("deposit-2024", () => {
    
   })
 
+  // it("deposit by udc", async () => {
+
+  //   let deposit_pda_info = await program.account.deposit.fetch(deposit_pda);
+
+  //   console.log("deposit ",JSON.stringify(deposit_pda_info));
+  
+    
+  //   const package_id = 1006;
+  //   const packagePda = getPackagePda(programId, package_id);
+
+  //   const packageData = await program.account.package.fetch(packagePda);
+
+  //   console.log("Package data: ", JSON.stringify(packageData));
+  //   const userPda = getUserPda(programId, provider.wallet.publicKey);
+  //   console.log("User PDA: ", userPda.toString());
+  //   const token_mint  = deposit_pda_info.supportCurrency[0];
+  //   console.log("Token mint: ", token_mint.toString());
+    
+  //   // console.log("user_ata:", getAssociatedTokenAddressSync(token_mint, provider.wallet.publicKey, true));
+    
+
+   
+
+  //   const tx = await program.methods.userBuyPackageBySpl(package_id).accounts({
+  //     depositAccount: deposit_pda,
+  //     packageAccount: packagePda,
+  //     tokenMint: token_mint,
+  //     depositAta: getAssociatedTokenAddressSync(token_mint, deposit_pda, true),
+  //     userDeposit: userPda,
+  //     userAta: getAssociatedTokenAddressSync(token_mint, provider.wallet.publicKey, true),
+  //     user: provider.wallet.publicKey,
+  //     associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+  //     tokenProgram: TOKEN_PROGRAM_ID,
+  //     systemProgram: anchor.web3.SystemProgram.programId,
+  //   }).rpc();
+
+  //   console.log("Deposit by usdc tx: ", tx);
+
+   
+  // })
+
+//   it("withdraw by owner", async () => {
+  
+//     const tx = await program.methods.adminWithdraw().accounts({
+//           depositAccount: deposit_pda,
+//           authority: provider.wallet.publicKey,
+//         }).rpc();
+//         console.log("admin withdraw sol: ", tx);
+//         // let deposit_pda_info = await program.account.deposit.fetch(deposit_pda);
+//         // console.log(JSON.stringify(deposit_pda_info));
+//   }
+// )
 
 
+  // console.log("wallet:", provider.publicKey.toString());
+  
 
 });

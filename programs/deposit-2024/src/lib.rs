@@ -55,10 +55,11 @@ pub mod deposit_2024 {
         user_buy_package::handle_user_buy_package_by_sol(ctx, package_id )
     }
 
-    pub fn withdraw_spl(ctx: Context<WithdrawSpl>, amount: u64) -> Result<()> {
-        withdraw::withdraw_spl_handle(ctx, amount)
+    pub fn admin_withdraw_spl(ctx: Context<AdminWithdrawSpl>) -> Result<()> {
+        admin_withdraw::admin_withdraw_spl_handle(ctx)
     }
-    pub fn withdraw_sol(ctx: Context<WithdrawSol>, amount: u64) -> Result<()> {
-        withdraw::withdraw_sol_handle(ctx, amount)
+
+    pub fn admin_withdraw_sol(ctx: Context<AdminWithdrawSol>) -> Result<()> {
+        admin_withdraw::admin_withdraw_sol_handle(ctx)
     }
 }

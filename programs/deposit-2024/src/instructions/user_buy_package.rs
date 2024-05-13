@@ -1,5 +1,4 @@
 
-use std::ops::Div;
 
 use anchor_lang::prelude::*;
 use anchor_spl::{associated_token::AssociatedToken, token::{Mint, Token, TokenAccount}};
@@ -9,6 +8,7 @@ use anchor_spl::{
     // associated_token::get_associated_token_address,
     token::{transfer, Transfer as SplTransfer},
 };
+use solana_program::native_token::LAMPORTS_PER_SOL;
 use solana_safe_math::SafeMath;
 
 use crate::{ Deposit, DepositErrors, DepositEvent, Package, User, DEPOSIT_ACCOUNT, PACKAGE, USER_ACCOUNT};
@@ -153,18 +153,15 @@ pub fn handle_user_buy_package_by_sol(ctx: Context<UserBuyPackageBySol>, package
 
     let package_price  = package_account.price as u64;
     msg!("package_price: {}", package_price);
-    let decimal = 9;
 
     let round = chainlink::latest_round_data(ctx.accounts.chainlink_program.to_account_info(), ctx.accounts.chainlink_feed.to_account_info())?;
 
     
-    let sol_price = round.answer.div(100000000); //decimal 8
-    msg!("sol_price: {}", sol_price as u64);
+    let sol_price = round.answer ; 
+    msg!("sol_price: {}", sol_price );
 
-    //price in 4 decimals, price in 8 decimals,  1 sol = 10^9 lamports,
-    // let sol_amount  = package_price.div(sol_price as u64).mul(10000).mul(10u64.pow(decimal)) ;// price in 4 decimals
-    //log sol
-    let sol_amount  = package_price.safe_div(sol_price as u64)?.safe_mul(10u64.pow(decimal))?.safe_div(10000)?;
+    //package price in 4 decimals, sol price in 8 decimals,  1 sol = 10^9 ,
+    let sol_amount  = package_price.safe_mul(100000000)?.safe_div(sol_price as u64)?.safe_mul(LAMPORTS_PER_SOL)?.safe_div(10000)?;
     msg!("sol_amount: {}", sol_amount);
 
     

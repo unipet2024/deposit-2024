@@ -22,6 +22,9 @@ pub struct OperatorWithdrawSpl<'info>{
     )]
     pub operator_account:  Account<'info, AuthorityRole>,
 
+    #[account(
+        constraint = operator_wallet.key() == deposit_account.operator_wallet,
+    )]
      /// CHECK: Create a new associated token account for the operator account
      pub operator_wallet: AccountInfo<'info>,
     #[account(
@@ -143,7 +146,7 @@ pub fn withdraw_sol_handle(ctx: Context<WithdrawSol>, amount: u64) -> Result<()>
     emit!(WithdrawEvent{
         address: operator_wallet.key(),
         amount: amount,
-        time: Clock::get()?.unix_timestamp
+        time: Clock::get().unwrap().unix_timestamp
     });
 
     Ok(())

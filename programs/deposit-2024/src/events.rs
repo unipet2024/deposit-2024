@@ -7,6 +7,9 @@ pub struct DepositEvent {
     pub package: u16,
     pub user: Pubkey,
     pub time: i64,
+    pub amount: u64,
+    pub token: String,
+    pub slot: u64,
 }
 
 #[event]

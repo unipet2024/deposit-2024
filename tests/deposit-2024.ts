@@ -117,11 +117,13 @@ describe("deposit-2024", () => {
     console.log("deposit ",JSON.stringify(deposit_pda_info));
   
     
-    const package_id = 1007;
+    const package_id = 1001;
     const packagePda = getPackagePda(programId, package_id);
 
     const packageData = await program.account.package.fetch(packagePda);
 
+
+    console.log("wallet: ",  provider.wallet.publicKey.toString());
     console.log("Package data: ", JSON.stringify(packageData));
     const userPda = getUserPda(programId, provider.wallet.publicKey);
     console.log("User PDA: ", userPda.toString());

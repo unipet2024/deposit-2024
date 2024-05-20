@@ -133,11 +133,14 @@ pub fn handle_user_buy_package_by_spl(ctx: Context<UserBuyPackageBySpl>, package
     }
 
     //emit event
-    let clock = Clock::get()?;
+    let clock = Clock::get().unwrap();
     emit!(DepositEvent {
         package: package_id,
         user: user.key(),
-        time: clock.unix_timestamp
+        time:clock.unix_timestamp,
+        amount: amount,
+        token: token_mint.key().to_string(),
+        slot: clock.slot,
     });
 
     Ok(())
@@ -192,13 +195,15 @@ pub fn handle_user_buy_package_by_sol(ctx: Context<UserBuyPackageBySol>, package
         user_deposit.add_package_bought(package_id)?;
     }
     //emit event
-    let clock = Clock::get()?;
 
-    // user_deposit.amount += package_item.price;
+    let clock = Clock::get().unwrap();
     emit!(DepositEvent {
         package: package_id,
         user: user.key(),
-        time: clock.unix_timestamp
+        time: clock.unix_timestamp,
+        amount: sol_amount,
+        token: Pubkey::default().to_string(),
+        slot: clock.slot,
     });
 
     Ok(())

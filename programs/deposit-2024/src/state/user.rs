@@ -19,4 +19,8 @@ impl User {
         self.bought_package.push(package_id);
         Ok(())
     }
+
+    pub fn get_counter_package(&self) -> usize {
+        self.bought_package.len()
+    }
 }

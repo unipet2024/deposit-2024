@@ -20,7 +20,7 @@ impl User {
         Ok(())
     }
 
-    pub fn get_counter_package(&self) -> usize {
-        self.bought_package.len()
+    pub fn get_counter_package(&self) -> u16 {
+        self.bought_package.len() as u16
     }
 }

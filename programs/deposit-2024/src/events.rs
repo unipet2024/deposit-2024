@@ -10,7 +10,7 @@ pub struct DepositEvent {
     pub amount: u64,
     pub token: String,
     pub slot: u64,
-    pub counter: usize,
+    pub counter: u16,
 }
 
 #[event]

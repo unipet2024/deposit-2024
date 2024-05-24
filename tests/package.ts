@@ -7,7 +7,7 @@ export const list_packages = [
   },
   {
     id: 1002,
-    price: 0.499 * decimal,
+    price: 4.99 * decimal,
   },
   {
     id: 1003,

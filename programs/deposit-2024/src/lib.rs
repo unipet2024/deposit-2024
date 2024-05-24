@@ -69,4 +69,8 @@ pub mod deposit_2024 {
     pub fn operator_withdraw_sol(ctx: Context<WithdrawSol>, amount: u64) -> Result<()> {
         operator_withdraw::withdraw_sol_handle(ctx, amount)
     }
+
+    pub fn update_package(ctx: Context<UpdatePackage>,id: u16, price : u32) -> Result<()> {
+        operator_instruction::handle_update_package(ctx, id, price)
+    }
 }

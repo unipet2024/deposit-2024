@@ -48,3 +48,12 @@ export const getUserPda =  ( programId: PublicKey, user: PublicKey): PublicKey =
       );
     return mint; 
 }
+
+export const getOperatorPda = (programId: PublicKey, auth: PublicKey) => {
+  const [mint] =  anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from(OPERATOR_ROLE), auth.toBuffer()],
+      programId
+  );
+  console.log("operator_account: ", mint.toString());
+  return mint;
+}

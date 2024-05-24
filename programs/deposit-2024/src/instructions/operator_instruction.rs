@@ -41,7 +41,31 @@ pub struct CreatePackage<'info> {
 
 
 
+#[derive(Accounts)]
+#[instruction(id: u16, price : u32)]
+pub struct  UpdatePackage<'info>{
 
+    #[account(
+        mut,
+        seeds = [PACKAGE, id.to_le_bytes().as_ref()],
+        bump = package_account.bump,
+        constraint = package_account.id == id,
+    )]
+    pub package_account:  Account<'info, Package>,
+
+    #[account(
+        seeds = [OPERATOR_ROLE, operator.key().as_ref()], 
+        bump = operator_account.bump,
+        constraint = operator_account.is_authority(operator.key) == true @ DepositErrors::OnlyOperator,
+        constraint = operator_account.role == AuthRole::Operator @ DepositErrors::OnlyOperator,
+        constraint = operator_account.status == true @ DepositErrors::OnlyOperator,
+    )]
+    pub operator_account:  Account<'info, AuthorityRole>,
+    #[account(mut, signer)]
+    pub operator: Signer<'info>,
+    pub system_program: Program<'info, System>, 
+
+}
 
 
 pub fn handle_create_package(ctx: Context<CreatePackage>, data: PackageInitParams) -> Result<()> {
@@ -54,3 +78,10 @@ pub fn handle_create_package(ctx: Context<CreatePackage>, data: PackageInitParam
     Ok(())
 }
 
+
+
+pub fn handle_update_package(ctx: Context<UpdatePackage>, id: u16, price : u32) -> Result<()> {
+    let package_account = &mut ctx.accounts.package_account;
+    package_account.update_price(id, price)?;
+    Ok(())
+}

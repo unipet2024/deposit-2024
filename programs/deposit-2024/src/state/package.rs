@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
 
+use crate::DepositErrors;
+
 
 
 // total 230
@@ -21,6 +23,17 @@ impl Package {
         self.status = true;
         Ok(())
     }  
+    pub fn update_price(&mut self, id: u16, price: u32) -> Result<()> {
+        if self.id != id {
+            return Err(DepositErrors::InputInvalid.into());
+        }
+        self.price = price;
+        Ok(())
+    }
+    pub fn close(&mut self) -> Result<()> {
+        self.status = false;
+        Ok(())
+    }
 }
 
 
